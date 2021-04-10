@@ -3,11 +3,11 @@ import serial
 import mysql.connector
 
 # reading mysql connection settings from file
-mysql_conf = open("./mysql_account_info.text", "r")
+mysql_conf = open("./Development/iot-parking-assignment/PythonSerialEdge/mysql_account_info.txt", "r")
 lines = mysql_conf.readlines()
 mysql_host = lines[0]
 mysql_user = lines[1]
-mysql_passwd = lines[2]
+mysql_passwd = lines[2].rstrip("\n")
 mysql_db = lines[3]
 
 # establish a connection the database
