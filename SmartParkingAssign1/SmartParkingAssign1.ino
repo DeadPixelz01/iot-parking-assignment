@@ -19,6 +19,7 @@ int distance;
 
 void setup() {
   Serial.begin(9600);
+  Serial.setTimeout(1);
   pinMode(redLed, OUTPUT);
   pinMode(greenLed, OUTPUT);
   pinMode(yellowLed, OUTPUT);
@@ -33,7 +34,7 @@ void loop() {
 
   // ultrasonic sensor triggeing
   digitalWrite(ultrasonicTrig, LOW);
-  delayMicroseconds(2);
+  delayMicroseconds(5);
   digitalWrite(ultrasonicTrig, HIGH);
   delayMicroseconds(10);
   digitalWrite(ultrasonicTrig, LOW);
@@ -43,34 +44,55 @@ void loop() {
   // use the duration to calculate the distance of an object (in cm) from the sensor
   // using the duration of sound
   distance = duration * 0.034 / 2;
-  // pass distance (cm) to serial
-  Serial.println(distance);
 
+  // if the distance is greater than 8 (no car is in the parking bay)
   if (distance > 8) {
+    // set the green LED to high and turn off the yellow and red LEDs
     digitalWrite(greenLed, HIGH);
     digitalWrite(redLed, LOW);
     digitalWrite(yellowLed, LOW);
+    // disable the buzzer tone
     noTone(buzzer);
     delay(1000);
+  // else there must be a car in the parking bay
   } else {
+    // set the red LED to high and turn off the green and yellow LEDs
     digitalWrite(greenLed, LOW);
     digitalWrite(redLed, HIGH);
     digitalWrite(yellowLed, LOW);
+    // disable buzzer tone
     noTone(buzzer);
+    // pass distance (cm) to serial
+    Serial.print("Taken,");
+    Serial.print(distance);
+    Serial.print(",Correct");
+    // read the string message back from the python program
+    Serial.readString();
     delay(1000);
   }
 
+  // check if a car is parked over the line (parked incorrectly)
   if (lineSensorValue <= 600) {
+    // turn off the green and red LEDs
     digitalWrite(greenLed, LOW);
     digitalWrite(redLed, LOW);
+    // while a car is parked over the line sensor
     while (lineSensorValue <= 600)
     {
-      Serial.println(lineSensorValue, DEC);
+      // pass details to serial
+      Serial.print("Taken,");
+      Serial.print(distance);
+      Serial.print(",Incorrect")
+      // read the string message back from the python program
+      Serial.readString();
+      // make the buzzer plays a tone
       tone(buzzer, 600);
+      // set the yellow LED to flicker on and off
       digitalWrite(yellowLed, HIGH);
       delay(500);
       digitalWrite(yellowLed, LOW);
       delay(500);
+      // read the line sensor's values for any changes
       lineSensorValue = analogRead(lineSensor);
     }
   }
