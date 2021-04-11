@@ -24,6 +24,7 @@ mycursor = db.cursor()
 
 # serial stuff - have no idea if this stuff works just yet! complete proof of concept
 ser = serial.Serial('/dev/ttyACM0',9600)
+ser.flushInput()
 while True:
   # read the serial and split the string into the correct attributes
   read_serial = ser.readline()
@@ -39,7 +40,7 @@ while True:
   # convert strings to boolean values
   if status == "Taken":
     status = True
-    ser.write("There is a car parked here!")
+    ser.write("There is a car parked here!".encode("utf-8"))
   else:
     status == False
 
@@ -47,7 +48,7 @@ while True:
     correctness = True
   else:
     correctness = False
-    ser.write("The car is parked incorrectly, please straighten up!")
+    ser.write("The car is parked incorrectly, please straighten up!".encode("utf-8"))
 
   # create a new carspot obj
   park = Carspot("Top Level", 1, status, distance, correctness, time)
