@@ -1,17 +1,26 @@
 # imports
 import serial
 import mysql.connector
+import os.path
+from os import path
 from Carspot import Carspot
 from datetime import datetime
-import os
+from termcolor import colored
 
 # reading mysql connection settings from file
-mysql_conf = open("./mysql_account_info.txt", "r")
-lines = mysql_conf.readlines()
-mysql_host = lines[0]
-mysql_user = lines[1]
-mysql_passwd = lines[2].rstrip("\n")
-mysql_db = lines[3]
+# you can change the path of the creds file
+filepath = "./mysql_account_info.txt"
+if path.exists(filepath):
+  mysql_conf = open(filepath, "r")
+  lines = mysql_conf.readlines()
+  mysql_host = lines[0]
+  mysql_user = lines[1]
+  mysql_passwd = lines[2].rstrip("\n")
+  mysql_db = lines[3]
+  print(colored('Found and reading MySQL credential file...', 'green'))
+else:
+  print(colored('Could not file your MySQL credential file!', 'red'))
+  exit()
 
 # establish a connection the database
 db = mysql.connector.connect(
@@ -20,9 +29,17 @@ db = mysql.connector.connect(
   password = mysql_passwd,
   database = mysql_db
 )
-mycursor = db.cursor()
+
+if db:
+  mycursor = db.cursor()
+  print(colored('MySQL connection successful!', 'green'))
+else:
+  print(colored('MySQL connection failed!', 'red'))
+  exit()
+
 
 # serial stuff - have no idea if this stuff works just yet! complete proof of concept
+print(colored('Communicating over serial... (RUNNING)', 'blue'))
 ser = serial.Serial('/dev/ttyACM0',9600)
 ser.flushInput()
 while True:
@@ -61,4 +78,4 @@ while True:
   mycursor.execute(sql_insert, val)
   db.commit()
   # print the console for confirmation
-  print(mycursor.rowcount, "record inserted.")
+  print(colored('{mycursor.rowcount} new record inserted!', 'pink'))
