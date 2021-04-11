@@ -65,7 +65,7 @@ void loop() {
     // pass distance (cm) to serial
     Serial.print("Taken,");
     Serial.print(distance);
-    Serial.print(",Correct");
+    Serial.println(",Correct");
     // read the string message back from the python program
     Serial.readString();
     delay(1000);
@@ -79,10 +79,6 @@ void loop() {
     // while a car is parked over the line sensor
     while (lineSensorValue <= 600)
     {
-      // pass details to serial
-      Serial.print("Taken,");
-      Serial.print(distance);
-      Serial.print(",Incorrect")
       // read the string message back from the python program
       Serial.readString();
       // make the buzzer plays a tone
@@ -92,6 +88,10 @@ void loop() {
       delay(500);
       digitalWrite(yellowLed, LOW);
       delay(500);
+      // pass details to serial
+      Serial.print("Taken,");
+      Serial.print(distance);
+      Serial.println(",Incorrect");
       // read the line sensor's values for any changes
       lineSensorValue = analogRead(lineSensor);
     }
