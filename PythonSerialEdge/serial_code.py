@@ -3,9 +3,10 @@ import serial
 import mysql.connector
 from Carspot import Carspot
 from datetime import datetime
+import os
 
 # reading mysql connection settings from file
-mysql_conf = open("./Development/iot-parking-assignment/PythonSerialEdge/mysql_account_info.txt", "r")
+mysql_conf = open("./mysql_account_info.txt", "r")
 lines = mysql_conf.readlines()
 mysql_host = lines[0]
 mysql_user = lines[1]
