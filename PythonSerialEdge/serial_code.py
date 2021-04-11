@@ -39,26 +39,26 @@ while True:
 
   # convert strings to boolean values
   if status == "Taken":
-    status = True
-    ser.write("There is a car parked here!".encode("utf-8"))
+    status = "True"
+    #ser.write("There is a car parked here!".encode("utf-8"))
   else:
-    status == False
+    status == "False"
 
   if correctness == "Correct":
-    correctness = True
+    correctness = "True"
   else:
-    correctness = False
-    ser.write("The car is parked incorrectly, please straighten up!".encode("utf-8"))
+    correctness = "False"
+    #ser.write("The car is parked incorrectly, please straighten up!".encode("utf-8"))
 
   # create a new carspot obj
   park = Carspot("Top Level", 1, status, distance, correctness, time)
 
-# sql query
-sql_insert = "INSERT INTO tbl_parking_lot (floor, bay_number, status, distance, correctness, time) VALUES (%s, %d, %r, %d, %r, %s)"
-# sql values to fill
-val = (park.floor, park.bay_number, park.status, park.distance, park.correctness, park.time)
-# execute query and commit changes to the database
-mycursor.execute(sql_insert, val)
-db.commit()
-# print the console for confirmation
-print(mycursor.rowcount, "record inserted.")
+  # sql query
+  sql_insert = "INSERT INTO tbl_parking_lot (floor, bay_number, status, distance, correctness, time) VALUES (%s, %s, %s, %s, %s, %s)"
+  # sql values to fill
+  val = (park.floor, park.bay_number, park.status, park.distance, park.correctness, park.time)
+  # execute query and commit changes to the database
+  mycursor.execute(sql_insert, val)
+  db.commit()
+  # print the console for confirmation
+  print(mycursor.rowcount, "record inserted.")
