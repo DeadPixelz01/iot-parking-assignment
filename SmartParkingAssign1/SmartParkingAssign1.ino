@@ -88,11 +88,11 @@ void loop() {
 
       if (newLineSensorValue != lineSensorValue) {
         // pass details to serial
-        Serial.print("Taken,");
-        Serial.print(distance);
-        Serial.println(",Incorrect");
+        //Serial.print("Taken,");
+        //Serial.print(distance);
+        //Serial.println(",Incorrect");
         // read the string message back from the python program
-        Serial.readString();
+        //Serial.readString();
       }
 
       // read the line sensor's values for any changes
