@@ -32,8 +32,6 @@ void setup() {
 }
 
 void loop() {
-  // read the line sensor value - check if anything is over the line
-  int newLineSensorValue = analogRead(lineSensor);
   // calculate a new distance each iteration of the loop
   int newDistance = calDistance(ultrasonicTrig, ultrasonicEcho);
 
@@ -80,6 +78,8 @@ void loop() {
     delay(1000);
   }
 
+  // read the line sensor value - check if anything is over the line
+  int newLineSensorValue = analogRead(lineSensor);
   // check if a car is parked over the line (parked incorrectly)
   if (newLineSensorValue <= 600) {
     // turn off the green and red LEDs
@@ -105,8 +105,8 @@ void loop() {
 
       // read the line sensor's values for any changes
       newLineSensorValue = analogRead(lineSensor);
+      lineSensorValue = newLineSensorValue;
     }
-    lineSensorValue = newLineSensorValue;
     delay(1000);
   }
 }
