@@ -46,10 +46,13 @@ void loop() {
     // disable the buzzer tone
     noTone(buzzer);
     if (newDistance != distance) {
-      Serial.print("Free,");
-      Serial.print(distance);
-      Serial.println(",Correct");
-      delay(1000);
+      int diff = distance - newDistance;
+      if (abs(diff) > 1 | abs(diff) < 1) {
+        Serial.print("Free,");
+        Serial.print(distance);
+        Serial.println(",Correct");
+        delay(1000);
+      }
     }
     distance = newDistance;
     delay(1000);
@@ -64,10 +67,13 @@ void loop() {
 
     // check if there has been a change in distance since last writing to serial
     if (newDistance != distance) {
-      // pass distance (cm) to serial
-      Serial.print("Taken,");
-      Serial.print(distance);
-      Serial.println(",Correct");
+      int diff = distance - newDistance;
+      if (abs(diff) > 1 | abs(diff) < 1) {
+        // pass distance (cm) to serial
+        Serial.print("Taken,");
+        Serial.print(distance);
+        Serial.println(",Correct");
+      }
     }
     // assign the distance var with the value of the new distance
     distance = newDistance;
