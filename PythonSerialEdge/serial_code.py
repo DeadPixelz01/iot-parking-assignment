@@ -41,13 +41,14 @@ else:
 
 # serial stuff
 print(colored('Communicating over serial... (RUNNING)', 'blue'))
-ser = serial.Serial('/dev/ttyACM0',9600)
+ser = serial.Serial('/dev/ttyACM0',9600, timeout=2)
 ser.flushInput()
 
 try:
   while True:
     # read the serial
     read_serial = ser.readline()
+    # don't read in sent commands - only records
     if ',' not in read_serial:
       continue
     else:
@@ -59,6 +60,22 @@ try:
       correctness = split_ser[2]
       now = datetime.now()
       time = now.strftime("%H:%M:%S")
+
+      # rule at the edge - send a command back to the arduino
+      # check the status of the parking bay
+      led_command = status
+      # if the bay is taken, send back the 'taken' command - will be read at the arduino
+      if led_command == "taken":
+        ser.write(b'taken')
+        line = ser.readline()
+        line = line.decode()
+        line = line.strip()
+      # else if the bay is free, send back the 'free' command - will be read at the arduino
+      elif led_command == "free":
+        ser.write(b'free')
+        line = ser.readline()
+        line = line.decode()
+        line = line.strip()
 
       # create a new carspot obj
       park = Carspot("Top Level", 1, status, distance, correctness, time)
