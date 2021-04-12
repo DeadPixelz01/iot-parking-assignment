@@ -73,4 +73,4 @@ try:
       # print the console for confirmation
       print(colored("{} new record inserted!".format(mycursor.rowcount), 'magenta'))
 except KeyboardInterrupt:
-  print(colored('Exiting...', 'red'))
+  print(colored('\nExiting...', 'red'))
