@@ -30,6 +30,7 @@ db = mysql.connector.connect(
   database = mysql_db
 )
 
+# check if the database connection has been established
 if db:
   mycursor = db.cursor()
   print(colored('MySQL connection successful!', 'green'))
@@ -38,44 +39,38 @@ else:
   exit()
 
 
-# serial stuff - have no idea if this stuff works just yet! complete proof of concept
+# serial stuff
 print(colored('Communicating over serial... (RUNNING)', 'blue'))
 ser = serial.Serial('/dev/ttyACM0',9600)
 ser.flushInput()
-while True:
-  # read the serial and split the string into the correct attributes
-  read_serial = ser.readline()
-  split_ser = read_serial.split(",")
 
-  # assign values
-  status = split_ser[0]
-  distance = int(split_ser[1])
-  correctness = split_ser[2]
-  now = datetime.now()
-  time = now.strftime("%H:%M:%S")
+try:
+  while True:
+    # read the serial
+    read_serial = ser.readline()
+    if ',' not in read_serial:
+      continue
+    else:
+      # split the string into the correct attributes
+      split_ser = read_serial.split(",")
+      # assign values
+      status = split_ser[0]
+      distance = int(split_ser[1])
+      correctness = split_ser[2]
+      now = datetime.now()
+      time = now.strftime("%H:%M:%S")
 
-  # convert strings to boolean values
-  if status == "Taken":
-    status = "True"
-    #ser.write("There is a car parked here!".encode("utf-8"))
-  else:
-    status == "False"
+      # create a new carspot obj
+      park = Carspot("Top Level", 1, status, distance, correctness, time)
 
-  if correctness == "Correct":
-    correctness = "True"
-  else:
-    correctness = "False"
-    #ser.write("The car is parked incorrectly, please straighten up!".encode("utf-8"))
-
-  # create a new carspot obj
-  park = Carspot("Top Level", 1, status, distance, correctness, time)
-
-  # sql query
-  sql_insert = "INSERT INTO tbl_parking_lot (floor, bay_number, status, distance, correctness, time) VALUES (%s, %s, %s, %s, %s, %s)"
-  # sql values to fill
-  val = (park.floor, park.bay_number, park.status, park.distance, park.correctness, park.time)
-  # execute query and commit changes to the database
-  mycursor.execute(sql_insert, val)
-  db.commit()
-  # print the console for confirmation
-  print(colored('{mycursor.rowcount} new record inserted!', 'pink'))
+      # sql query
+      sql_insert = "INSERT INTO tbl_parking_lot (floor, bay_number, status, distance, correctness, time) VALUES (%s, %s, %s, %s, %s, %s)"
+      # sql values to fill
+      val = (park.floor, park.bay_number, park.status, park.distance, park.correctness, park.time)
+      # execute query and commit changes to the database
+      mycursor.execute(sql_insert, val)
+      db.commit()
+      # print the console for confirmation
+      print(colored("{} new record inserted!".format(mycursor.rowcount), 'magenta'))
+except KeyboardInterrupt:
+  print(colored('Exiting...', 'red'))

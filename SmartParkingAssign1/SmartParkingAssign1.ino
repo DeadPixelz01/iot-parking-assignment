@@ -19,7 +19,6 @@ int distance;
 
 void setup() {
   Serial.begin(9600);
-  Serial.setTimeout(1);
   pinMode(redLed, OUTPUT);
   pinMode(greenLed, OUTPUT);
   pinMode(yellowLed, OUTPUT);
@@ -46,6 +45,13 @@ void loop() {
     digitalWrite(yellowLed, LOW);
     // disable the buzzer tone
     noTone(buzzer);
+    if (newDistance != distance) {
+      Serial.print("Free,");
+      Serial.print(distance);
+      Serial.println(",Correct");
+      delay(1000);
+    }
+    distance = newDistance;
     delay(1000);
   // else there must be a car in the parking bay
   } else {
@@ -62,8 +68,6 @@ void loop() {
       Serial.print("Taken,");
       Serial.print(distance);
       Serial.println(",Correct");
-      // read the string message back from the python program
-      Serial.readString();
     }
     // assign the distance var with the value of the new distance
     distance = newDistance;
@@ -88,11 +92,9 @@ void loop() {
 
       if (newLineSensorValue != lineSensorValue) {
         // pass details to serial
-        //Serial.print("Taken,");
-        //Serial.print(distance);
-        //Serial.println(",Incorrect");
-        // read the string message back from the python program
-        //Serial.readString();
+        Serial.print("Taken,");
+        Serial.print(distance);
+        Serial.println(",Incorrect");
       }
 
       // read the line sensor's values for any changes
@@ -103,6 +105,7 @@ void loop() {
   }
 }
 
+// func for calculating the distance of obj from the ultrasonic sensor
 int calDistance(int trig, int echo) {
   // ultrasonic sensor triggeing
   digitalWrite(trig, LOW);
