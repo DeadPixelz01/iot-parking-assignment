@@ -47,6 +47,7 @@ void loop() {
       digitalWrite(yellowLed, LOW);
       // disable buzzer tone
       noTone(buzzer);
+      delay(1000);
     // else if the free command is read...
     } else if (ledCommand == "free") {
       // set the green LED to high and turn off the yellow and red LEDs
@@ -55,6 +56,7 @@ void loop() {
       digitalWrite(yellowLed, LOW);
       // disable the buzzer tone
       noTone(buzzer);
+      delay(1000);
     }
   }
 
